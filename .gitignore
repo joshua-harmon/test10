@@ -1,2 +1,7 @@
 /todolist.txt
 /venv
+.vscode
+/backend_folder/__pycache__
+/backend_folder/backend/settings.py
+backend_folder/db.sqlite3
+.gitignore

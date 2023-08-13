@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 
+//? This function is from Pinia! Check the documentation of how it works
 export const useUserStore = defineStore({
   id: 'user',
   state: () => ({

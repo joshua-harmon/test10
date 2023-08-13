@@ -1,3 +1,9 @@
+<script setup>
+
+// This is how we retrieve the data from backend and save it into a variable
+const { data: jobs } = await useFetch('http://127.0.0.1:8000/api/v1/jobs/newest/')
+</script>
+
 <template>
 	<div>
 		<div class="py-20 px-6 bg-teal-700 text-center">
@@ -11,9 +17,8 @@
 			<!-- Will take 3 spans when from medium screen -->
 			<div class="md:col-span-3 bg-gray-100 rounded-xl">
 				<div class="space-y-8">
-          <Job :my="true" />
-          <Job :my="true" />
-					<Job />
+					<!-- We declare v-for loop and v-bind so Vue has a unique key for iteration -->
+          <Job v-for="job in jobs" :key="job.id" :job="job" :my="true" />
 				</div>
 			</div>
 		</div>
