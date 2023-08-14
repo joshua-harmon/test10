@@ -1,5 +1,6 @@
 from .models import Job, Category
 from .serializers import CategorySerializer, JobDetailSerializer, JobSerializer
+from .forms import JobForm
 
 from rest_framework import status, authentication, permissions
 from rest_framework.response import Response
@@ -29,6 +30,44 @@ class BrowseJobsView(APIView):
 
     return Response(serializer.data)
   
+class MyJobsView(APIView):
+  authentication_classes = [authentication.TokenAuthentication]
+  permission_classes = [permissions.IsAuthenticated]
+  def get(self, request):
+    jobs = Job.objects.filter(created_by=request.user)  
+    serializer = JobDetailSerializer(jobs, many=True)
+    
+    return Response(serializer.data)
+
+
+class CreateJobView(APIView):
+  authentication_classes = [authentication.TokenAuthentication]
+  permission_classes = [permissions.IsAuthenticated]
+  
+  def post(self, request):
+    form = JobForm(request.data)
+    
+    if form.is_valid():
+      job = form.save(commit=False)
+      job.created_by = request.user
+      job.save()
+      return Response({'status', 'created'})
+    else:
+      return Response({'status': 'errors', 'errors': form.errors})
+    
+  def put(self, request, pk):
+    job_for_update = Job.objects.get(pk=pk)
+    form = JobForm(request.data, instance=job_for_update)
+    form.save()
+    return Response(data={'status': 'updated'})
+  
+  
+  def delete(self, request, pk):
+    job_for_delete = Job.objects.get(pk=pk)
+    job_for_delete.delete()
+    
+    return Response(data={'status': 'deleted'}, status=200)
+  
   
 class JobsDetailView(APIView):
   def get(self, request, pk, format=None):
@@ -44,3 +83,5 @@ class CategoryView(APIView):
     serializer = CategorySerializer(categories, many=True)
     
     return Response(serializer.data)
+  
+  

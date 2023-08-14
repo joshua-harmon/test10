@@ -4,6 +4,13 @@ const route = useRoute()
 console.log(route)
 // With doing request, add route.params.id to add a parameter as id
 const {data:job} = await useFetch('http://127.0.0.1:8000/api/v1/jobs/' + route.params.id + '/')
+
+// Here we wait to receive a job reference
+useSeoMeta({
+    title: job.value.title,
+    ogTitle: job.value.title,
+    description: 'The description'
+})
 </script>
 
 <template>
